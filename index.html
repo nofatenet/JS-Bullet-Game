@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullets are Here</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Adding TAILWIND really quick here, so we have all the Basic CSS we need -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="fixed text-white text-sm ml-4 mt-4 select-none">
+        <span>Score: </span>
+        <span id="scoreHtml">0</span>
+    </div>
+    <canvas>
+    </canvas>
+    <!-- Adding GSAP. Used for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js">
+    </script>
+    <script src="./index.js">
+    </script>
+</body>
+
+</html>
