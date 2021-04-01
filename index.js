@@ -5,7 +5,11 @@ const ctx = canvasObj.getContext('2d');
 canvasObj.width = window.innerWidth;
 canvasObj.height = window.innerHeight;
 
-const scoreHtml = document.getElementById('scoreHtml');
+const scoreHtml = document.getElementById("scoreHtml");
+const startBtn = document.getElementById("startGameBtn");
+const modalMainMenu = document.getElementById("modalMainMenu");
+const bigScore = document.getElementById("bigScoreHtml");
+
 
 console.log(ctx);
 
@@ -109,11 +113,20 @@ class Gib {
 const xWorld = canvasObj.width / 2;
 const yWorld = canvasObj.height / 2;
 
-const player = new Player(xWorld, yWorld, 30, "#070707");
-//console.log(player);
-const bullets = [];
-const enemies = [];
-const gibs = [];
+let player = new Player(xWorld, yWorld, 30, "#070707");
+let bullets = [];
+let enemies = [];
+let gibs = [];
+
+function init() {
+    player = new Player(xWorld, yWorld, 30, "#070707");
+    bullets = [];
+    enemies = [];
+    gibs = [];
+    score = 0;
+    scoreHtml.innerHTML = score;
+    bigScore.innerHTML = score;
+}
 
 
 
@@ -182,7 +195,7 @@ function animate() {
                             bullet.x,
                             bullet.y,
                             Math.random() * 2,
-                            enemy.color, // Change to "#992200" / "#AA1111" for "ultra-violent"
+                            enemy.color, // Change to "#992200", / "#AA1111", for "ultra-violent"
                             {x: (Math.random() - 0.5) * (Math.random() * 4),
                             y: (Math.random() - 0.5) * (Math.random() * 4)
                             }))
@@ -199,23 +212,34 @@ function animate() {
                         setTimeout(() => {
                         bullets.splice(bulletIndex, 1);
                     }, 0);
+
+                    // Sound of Hitting:
+                    zzfx(...[,,418,0,.02,.2,4,1.15,-8.5,,,,,.7,,.06]);
                 } else {
                         setTimeout(() => {
                         console.log("We are touching!!");
+                        //We give out indexes so the touching ones are removed.
                         enemies.splice(enemiesIndex, 1);
                         bullets.splice(bulletIndex, 1);
-                        //We give out indexes so the touching ones are removed.
+
+                        // Sound of exploding Enemy:
+                        zzfx(...[,,333,.01,0,.9,4,1.9,,,,,,.5,,.8]);
                     }, 0);
                 }
 
             }
         });
 
-        // This is Game Over:
+        // This is GAME OVER:
         const distEnemPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
             if (distEnemPlayer - enemy.radius - player.radius < 1) {
                 console.log("We are FCKD!");
                 cancelAnimationFrame(animationId);
+                    modalMainMenu.style.display = "flex";
+                    bigScore.innerHTML = score;
+
+                    //Sound of GAME OVER:
+                    zzfx(...[,,925,.04,.3,.6,1,.3,,6.27,-184,.09,.17])
             }
     });
 }
@@ -235,12 +259,20 @@ window.addEventListener("click", (event) => {
         y: Math.sin(angle) * speed
     };
 
+    // Birth of a Bullet:
     bullets.push(new Bullet(
         xWorld, yWorld, 3, "#DDBB99", velocity
         ));
 
     console.log(event);
+    // Sound of Bullet:
+    zzfx(...[,,129,.01,,.15,,,,,,,,5])
 });
 
-animate();
-spawnEnemies();
+startBtn.addEventListener("click", () => {
+    init();
+    animate();
+    spawnEnemies();
+    modalMainMenu.style.display = "none";
+});
+
