@@ -9,7 +9,7 @@ const scoreHtml = document.getElementById("scoreHtml");
 const startBtn = document.getElementById("startGameBtn");
 const modalMainMenu = document.getElementById("modalMainMenu");
 const bigScore = document.getElementById("bigScoreHtml");
-
+const sound1 = document.getElementById("Audio");
 
 console.log(ctx);
 
@@ -128,7 +128,10 @@ function init() {
     bigScore.innerHTML = score;
 }
 
-
+// Sounds:
+function playSound1() { 
+    sound1.play(); 
+}
 
 function spawnEnemies() {
     setInterval(() => {
@@ -214,7 +217,7 @@ function animate() {
                     }, 0);
 
                     // Sound of Hitting:
-                    zzfx(...[,,418,0,.02,.2,4,1.15,-8.5,,,,,.7,,.06]);
+                    zzfx(...[.4,,418,0,.02,.2,4,1.15,-8.5,,,,,.7,,.06]);
                 } else {
                         setTimeout(() => {
                         console.log("We are touching!!");
@@ -223,7 +226,7 @@ function animate() {
                         bullets.splice(bulletIndex, 1);
 
                         // Sound of exploding Enemy:
-                        zzfx(...[,,333,.01,0,.9,4,1.9,,,,,,.5,,.8]);
+                        zzfx(...[.6,,333,.01,0,.9,4,1.9,,,,,,.5,,.8]);
                     }, 0);
                 }
 
@@ -239,40 +242,74 @@ function animate() {
                     bigScore.innerHTML = score;
 
                     //Sound of GAME OVER:
-                    zzfx(...[,,925,.04,.3,.6,1,.3,,6.27,-184,.09,.17])
+                    zzfx(...[.5,,925,.04,.3,.6,1,.3,,6.27,-184,.09,.17])
             }
     });
 }
 
+// let fireRate;
+// document.addEventListener("mousedown", (event) => {
+
+//     fireRate = setInterval(function(){
+//         const angle = Math.atan2(event.clientY - yWorld, event.clientX - xWorld);
+//         // Bullet Speed:
+//         let speed = 5;
+//         const velocity = {
+//             x: Math.cos(angle) * speed,
+//             y: Math.sin(angle) * speed
+//         };
+//         // Birth of a Bullet:
+//         bullets.push(new Bullet(
+//             xWorld, yWorld, 3, "#DDBB99", velocity
+//             ));
+//         // Sound of Bullet:
+//         //playSound1();
+//         zzfx(...[,,129,.01,,.15,,,,,,,,5]);
+
+//      }, 150); // Rate of Fire
+// });
+
+// document.addEventListener("mouseup", () => {
+//     if (fireRate) clearInterval(fireRate);
+// });
+
+
 //All mouse properties are visible,
 //when we add event to parameter and log it.
 //Things like clientX and clientY(the mouse position!)
+
 window.addEventListener("click", (event) => {
-    console.log(bullets);
-    const angle = Math.atan2(event.clientY - yWorld, event.clientX - xWorld);
-    // console.log(angle);
+        console.log(bullets);
+        const angle = Math.atan2(event.clientY - yWorld, event.clientX - xWorld);
+        // console.log(angle);
 
-    // Bullet Speed:
-    let speed = 5;
-    const velocity = {
-        x: Math.cos(angle) * speed,
-        y: Math.sin(angle) * speed
-    };
+        // Bullet Speed:
+        let speed = 5;
+        const velocity = {
+            x: Math.cos(angle) * speed,
+            y: Math.sin(angle) * speed
+        };
 
-    // Birth of a Bullet:
-    bullets.push(new Bullet(
-        xWorld, yWorld, 3, "#DDBB99", velocity
-        ));
+        // Birth of a Bullet:
+        bullets.push(new Bullet(
+            xWorld, yWorld, 3, "#DDBB99", velocity
+            ));
 
-    console.log(event);
-    // Sound of Bullet:
-    zzfx(...[,,129,.01,,.15,,,,,,,,5])
+        console.log(event);
+        // Sound of Bullet:
+        //playSound1();
+        zzfx(...[.8,,129,.01,,.15,,,,,,,,5]);
 });
+
+// Create a song
+let mySongData = zzfxM(...[[[,0,400,,,,1]],[[[,-1,10,4,5,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,-1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]]],[0],,{"title":"New Song","instruments":["Instrument 0"],"patterns":["Pattern 0"]}]);
 
 startBtn.addEventListener("click", () => {
     init();
     animate();
     spawnEnemies();
     modalMainMenu.style.display = "none";
-});
 
+    // Play the song (returns a AudioBufferSourceNode)
+    let myAudioNode = zzfxP(...mySongData);
+});
