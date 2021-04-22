@@ -6,6 +6,7 @@ canvasObj.width = window.innerWidth;
 canvasObj.height = window.innerHeight;
 
 const scoreHtml = document.getElementById("scoreHtml");
+const healthHtml = document.getElementById("healthHtml");
 const startBtn = document.getElementById("startGameBtn");
 const modalMainMenu = document.getElementById("modalMainMenu");
 const bigScore = document.getElementById("bigScoreHtml");
@@ -67,7 +68,9 @@ class Enemy {
         ctx.arc(
             this.x, this.y, this.radius, 0, Math.PI * 2, false);
         ctx.fillStyle = this.color;
-        ctx.fill();
+        //ctx.fill();
+        // fill not used here, when using Bitmap Images (declared in components.js)
+        ctx.drawImage(BAT_img, this.x - 16, this.y - 10);
     }
     update() {
         this.draw();
@@ -124,6 +127,8 @@ function init() {
     enemies = [];
     gibs = [];
     score = 0;
+    health = 100;
+    healthHtml.innerHTML = health;
     scoreHtml.innerHTML = score;
     bigScore.innerHTML = score;
 }
@@ -198,7 +203,7 @@ function animate() {
                             bullet.x,
                             bullet.y,
                             Math.random() * 2,
-                            enemy.color, // Change to "#992200", / "#AA1111", for "ultra-violent"
+                            "#999966", //enemy.color, // Change to "#992200", / "#AA1111", for "ultra-violent"
                             {x: (Math.random() - 0.5) * (Math.random() * 4),
                             y: (Math.random() - 0.5) * (Math.random() * 4)
                             }))
@@ -233,16 +238,26 @@ function animate() {
             }
         });
 
-        // This is GAME OVER:
+        // Enemy is hitting Home:
         const distEnemPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
             if (distEnemPlayer - enemy.radius - player.radius < 1) {
                 console.log("We are FCKD!");
+                enemies.splice(enemiesIndex, 1);
+                health -= 10;
+                healthHtml.innerHTML = health;
+                console.log("Health is now: ", health);
+                zzfx(...[0.1,0,50,.02,,.5,4,.1,,,,,,,,.06,.01])
+
+                // GAME OVER:
+                if (health < 1) {
                 cancelAnimationFrame(animationId);
+                    healthHtml.innerHTML = health;
+                    scoreHtml.innerHTML = score;
                     modalMainMenu.style.display = "flex";
                     bigScore.innerHTML = score;
-
                     //Sound of GAME OVER:
                     zzfx(...[.5,,925,.04,.3,.6,1,.3,,6.27,-184,.09,.17])
+                }
             }
     });
 }
@@ -302,7 +317,7 @@ window.addEventListener("click", (event) => {
 });
 
 // Create a song
-let mySongData = zzfxM(...[[[,0,400,,,,1]],[[[,-1,10,4,5,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,-1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]]],[0],,{"title":"New Song","instruments":["Instrument 0"],"patterns":["Pattern 0"]}]);
+//let mySongData = zzfxM(...[[[,0,400,,,,1]],[[[,-1,10,4,5,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,-1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,],[,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]]],[0],,{"title":"New Song","instruments":["Instrument 0"],"patterns":["Pattern 0"]}]);
 
 startBtn.addEventListener("click", () => {
     init();
@@ -311,5 +326,5 @@ startBtn.addEventListener("click", () => {
     modalMainMenu.style.display = "none";
 
     // Play the song (returns a AudioBufferSourceNode)
-    let myAudioNode = zzfxP(...mySongData);
+    //let myAudioNode = zzfxP(...mySongData);
 });
