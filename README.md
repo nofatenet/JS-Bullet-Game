@@ -1,6 +1,6 @@
 # JS-Bullet-Game
 
-## BATS ARE COMING! ![BAT](bat3.png)
+![BAT](bat4.png) ## BATS ARE COMING! ![BAT](bat3.png)
 
 Aim with Cursor -> Shot Bullets
 
