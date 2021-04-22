@@ -67,10 +67,14 @@ class Enemy {
         ctx.beginPath();
         ctx.arc(
             this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
+        //ctx.fillStyle = this.color;
         //ctx.fill();
         // fill not used here, when using Bitmap Images (declared in components.js)
-        ctx.drawImage(BAT_img, this.x - 16, this.y - 10);
+        if (this.radius > 24) {
+            ctx.drawImage(BATcool_img, this.x - 16, this.y - 10);
+        } else {
+            ctx.drawImage(BAT_img, this.x - 16, this.y - 10);
+        }
     }
     update() {
         this.draw();
@@ -309,6 +313,11 @@ window.addEventListener("click", (event) => {
         bullets.push(new Bullet(
             xWorld, yWorld, 3, "#DDBB99", velocity
             ));
+        // A Single Hellfire Bullet Costs $1 SCORE:
+        if (score > 1) {
+            score -= 1;
+        scoreHtml.innerHTML = score;
+        }
 
         console.log(event);
         // Sound of Bullet:
