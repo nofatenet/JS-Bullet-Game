@@ -14,6 +14,34 @@ const sound1 = document.getElementById("Audio");
 
 console.log(ctx);
 
+let leftArrow = false;
+let rightArrow = false;
+
+// control keys:
+document.addEventListener("keydown", function(event) {
+    if (event.keyCode == 37) {
+        leftArrow = true;
+    } else if(event.keyCode == 39) {
+        rightArrow = true;
+    }
+});
+document.addEventListener("keyup", function(event) {
+    if (event.keyCode == 37) {
+        leftArrow = false;
+    } else if(event.keyCode == 39) {
+        rightArrow = false;
+    }
+});
+
+// move player:
+function movePlayer() {
+    if(rightArrow && player.x < canvasObj.width) {
+        player.x += 2;
+    } else if(leftArrow && player.x > 0) {
+        player.x -= 2;
+    }
+}
+
 class Player {
     constructor(x, y, radius, color) {
         this.x = x;
@@ -151,7 +179,7 @@ function spawnEnemies() {
 
         const color =  `hsl(${Math.random()*360}, 50%, 50%)`  // "#225588";
 
-        const angle = Math.atan2(yWorld - y, xWorld - x); //Closing IN to the Center/Player.
+        const angle = Math.atan2(player.y - y, player.x - x); //Closing IN to the Center(if xWorld.x) OR Player(if player.x).
         const velocity = { x: Math.cos(angle), y: Math.sin(angle)};
 
         enemies.push(new Enemy(x, y, radius, color, velocity))
@@ -164,6 +192,7 @@ function animate() {
     animationId = requestAnimationFrame(animate);
     ctx.fillStyle = "rgba(30, 30, 30, 0.2)"; //Color of Television, tuned to a dead channel.
     ctx.fillRect(0, 0, canvasObj.width, canvasObj.height) // clear Screen
+    movePlayer();
     player.draw();  // Draw back the Player to the Screen
 
     gibs.forEach((gib, gibIndex) => {
@@ -300,7 +329,8 @@ function animate() {
 window.addEventListener("click", (event) => {
         console.log(bullets);
         const angle = Math.atan2(event.clientY - yWorld, event.clientX - xWorld);
-        // console.log(angle);
+        // https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
+        console.log("Angle: ", angle);
 
         // Bullet Speed:
         let speed = 5;
@@ -311,7 +341,7 @@ window.addEventListener("click", (event) => {
 
         // Birth of a Bullet:
         bullets.push(new Bullet(
-            xWorld, yWorld, 3, "#DDBB99", velocity
+            player.x, player.y, 3, "#DDBB99", velocity
             ));
         // A Single Hellfire Bullet Costs $1 SCORE:
         if (score > 1) {
